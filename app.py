@@ -18,12 +18,23 @@ app.layout = html.Div([
         html.H1(id='H1', children='Simulation of price changes after trades', style={'textAlign': 'center', \
                                                                                      'marginTop': 40,
                                                                                      'marginBottom': 40}),
-        html.Label('A1'),
-        dcc.Slider(min=0, max=200, step=1, value=85, id='A1', tooltip={"placement": "bottom", "always_visible": True}),
+        html.Label('Target Price: '),
+        dcc.Input(
+            id="target_price", type="number", placeholder='',
+            min=0.25, max=1000, step=0.25, value=8
+        ),
+        html.Br(),
+        html.Br(),
+        html.Label('A1:'),
+        dcc.Slider(min=0.0001, max=200, step=0.0001, value=85, id='A1', marks={
+        0: '0', 50: '50', 100: '100', 150: '150', 200: '200'},
+                   tooltip={"placement": "bottom", "always_visible": True}),
 
         html.Br(),
-        html.Label('A2'),
-        dcc.Slider(min=0, max=200, step=1, value=0.0001, id='A2',
+        html.Br(),
+        html.Label('A2:'),
+        dcc.Slider(min=0.0001, max=200, step=0.0001, value=0.0001, id='A2', marks={
+        0: '0', 50: '50', 100: '100', 150: '150', 200: '200'},
                    tooltip={"placement": "bottom", "always_visible": True}),
         dcc.Graph(id='customswap_plot'),
     ], style={'padding': 10, 'flex': 1}),
@@ -51,17 +62,18 @@ app.layout = html.Div([
               Output('stableswap_plot', 'figure'),
               Output('customswap_plot', 'figure'),
               [Input('A1', 'value'),
-               Input('A2', 'value')])
-def graph_update(a1, a2):
+               Input('A2', 'value'),
+               Input('target_price', 'value')])
+def graph_update(a1, a2, target_price):
     prices1, prices2, price_slippages1, price_slippages2, token_ratio1, token_ratio2, \
     amplifications1, amplifications2 = perform_simulation(a1=a1, a2=a2)
 
     figs = []
     fig_labels = ['Uniswap', 'Stableswap', 'Customswap']
     for i in range(3):
-        fig = go.Figure([go.Scatter(x=token_ratio1[i, :], y=prices1[i, :], mode='lines+markers', \
+        fig = go.Figure([go.Scatter(x=token_ratio1[i, :], y=prices1[i, :] * target_price, mode='lines+markers', \
                                     line=dict(color='firebrick', width=4), name='$Boot Sales'),
-                         go.Scatter(x=token_ratio2[i, :], y=prices2[i, :], mode='lines+markers', \
+                         go.Scatter(x=token_ratio2[i, :], y=prices2[i, :] * target_price, mode='lines+markers', \
                                     line=dict(color='blue', width=4), name='$Boot Purchases')
                          ])
 
