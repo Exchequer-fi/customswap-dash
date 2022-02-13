@@ -1,6 +1,5 @@
+numpy
 gunicorn==19.3.0
 dash
 dash-html-components
 dash-core-components
-plotly
-numpy

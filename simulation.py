@@ -1,4 +1,4 @@
-from src.liquidity_pool import LiquidityPool
+from liquidity_pool import LiquidityPool
 from copy import deepcopy
 import numpy as np
 

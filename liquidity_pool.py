@@ -1,4 +1,4 @@
-import src.utils as ut
+import utils as ut
 from typing import List, Union
 import numpy as np
 

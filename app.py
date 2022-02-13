@@ -1,16 +1,16 @@
 import dash
-import dash_html_components as html
+from dash import html
 import plotly.graph_objects as go
-import dash_core_components as dcc
-import plotly.express as px
+from dash import dcc
 from dash.dependencies import Input, Output
 
 import sys
 
 sys.path.append('..')
-from src.simulation import perform_simulation
+from simulation import perform_simulation
 
-app = dash.Dash()
+app = dash.Dash(__name__)
+server = app.server
 
 app.layout = html.Div([
 
@@ -77,10 +77,10 @@ def graph_update(a1, a2):
     return figs[0], figs[1], figs[2]
 
 
-if __name__ == '__main__':
-    app.run_server()
+# if __name__ == '__main__':
+#     app.run_server()
 
-
+#
 # from flask import Flask
 # app = Flask(__name__)
 #
