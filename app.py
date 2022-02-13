@@ -10,6 +10,7 @@ sys.path.append('..')
 from simulation import perform_simulation
 
 app = dash.Dash(__name__)
+app.title = 'Customswap Simulation'
 server = app.server
 
 app.layout = html.Div([
