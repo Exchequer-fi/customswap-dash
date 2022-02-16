@@ -28,14 +28,14 @@ app.layout = html.Div([
         html.Br(),
         html.Label('A1:'),
         dcc.Slider(min=0.0001, max=200, step=0.0001, value=85, id='A1', marks={
-        0: '0', 50: '50', 100: '100', 150: '150', 200: '200'},
+            0: '0', 50: '50', 100: '100', 150: '150', 200: '200'},
                    tooltip={"placement": "bottom", "always_visible": True}),
 
         html.Br(),
         html.Br(),
         html.Label('A2:'),
         dcc.Slider(min=0.0001, max=200, step=0.0001, value=0.0001, id='A2', marks={
-        0: '0', 50: '50', 100: '100', 150: '150', 200: '200'},
+            0: '0', 50: '50', 100: '100', 150: '150', 200: '200'},
                    tooltip={"placement": "bottom", "always_visible": True}),
         dcc.Graph(id='customswap_plot'),
     ], style={'padding': 10, 'flex': 1}),
@@ -43,22 +43,9 @@ app.layout = html.Div([
         dcc.Graph(id='uniswap_plot'),
         dcc.Graph(id='stableswap_plot'),
 
-
-
     ], style={'padding': 10, 'flex': 1})], style={'display': 'flex', 'flex-direction': 'row'})
 
 
-# app.layout = html.Div(id='parent', children=[
-#     html.H1(id='H1', children='Simulation of price changes after trades', style={'textAlign': 'center', \
-#                                                                       'marginTop': 40, 'marginBottom': 40}),
-#     dcc.Slider(min=0, max=200, step=1, value=85, id='A1', tooltip={"placement": "bottom", "always_visible": True}),
-#     dcc.Slider(min=0, max=200, step=1, value=0.0001, id='A2', tooltip={"placement": "bottom", "always_visible": True}),
-#     dcc.Graph(id='uniswap_plot'),
-#     dcc.Graph(id='stableswap_plot'),
-#     dcc.Graph(id='customswap_plot')
-# ])
-#
-#
 @app.callback(Output('uniswap_plot', 'figure'),
               Output('stableswap_plot', 'figure'),
               Output('customswap_plot', 'figure'),
@@ -88,18 +75,3 @@ def graph_update(a1, a2, target_price):
         figs.append(fig)
 
     return figs[0], figs[1], figs[2]
-
-
-# if __name__ == '__main__':
-#     app.run_server()
-
-#
-# from flask import Flask
-# app = Flask(__name__)
-#
-# @app.route('/')
-# def hello_world():
-#     return 'Hello World!'
-#
-# if __name__ == '__main__':
-#     app.run()

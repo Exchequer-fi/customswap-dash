@@ -1,4 +1,4 @@
-D_EQUALITY_PRECISION = 1e-6  #0.00001
+D_EQUALITY_PRECISION = 1e-6
 
 
 def curve_get_dy(payment_token_index, requested_token_index, payment_token_amount, token_amounts_before_payment,
