@@ -1,6 +1,6 @@
 # Customswap Simulation Dashboard
 
-Customswap is a new decentralized finance (Defi) automated market-maker (AMM) algorithm introduced by Boot Finance (blog post, litepaper). 
+Customswap is a new decentralized finance (Defi) automated market-maker (AMM) algorithm introduced by Boot Finance ([blog post](https://medium.com/bootfinance/customswap-by-boot-finance-1336f6d63cbd), [Litepaper](https://bootfinance.notion.site/Litepaper-v0-9-eaf14e3fbff443c494eb43059ce29734)). 
 
 This repository contains:
 * An implementation of Customswap in Python 
