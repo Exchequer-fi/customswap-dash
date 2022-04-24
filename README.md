@@ -14,3 +14,7 @@ A live demo of the dashboard is [available here](https://customswap.herokuapp.co
 3. Boot token price is plotted against the ratio of tokens in the pool in a log-log plot. 
 4. The steps above are repeated for AMM pools using Customswap, Stableswap and Uniswap algorithms.
 
+# Heroku Deployment
+
+
+
