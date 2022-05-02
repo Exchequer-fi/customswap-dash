@@ -136,9 +136,3 @@ def graph_update(a1, a2, target_price, large_sell_ratio, num_tokens):
 
 # for command line
 # app.run_server(debug=True)
-
-
-# ToDo:
-# 1- Done: Add a 'loading' component to show updating
-# 2- Done: Add an input box for total number of tokens in the pool  (1000,000 default)
-# 3- DONE: Add a horizontal line showing the baseline (only uniswap price) in the price figure
