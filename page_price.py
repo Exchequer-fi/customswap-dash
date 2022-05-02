@@ -1,5 +1,5 @@
 import dash
-from dash import html
+from dash import html, callback
 import plotly.graph_objects as go
 from dash import dcc
 from dash.dependencies import Input, Output
@@ -9,10 +9,10 @@ import sys
 sys.path.append('..')
 from simulation import perform_simulation
 
-app = dash.Dash(__name__)
-app.title = 'Customswap Simulation'
+# app = dash.Dash(__name__)
+# app.title = 'Customswap Simulation'
 
-app.layout = html.Div([
+layout = html.Div([
 
     html.Div(children=[
         html.H1(id='H1', children='Simulation of price changes after trades', style={'textAlign': 'center', \
@@ -36,18 +36,31 @@ app.layout = html.Div([
         dcc.Slider(min=0.0001, max=200, step=0.0001, value=0.0001, id='A2', marks={
             0: '0', 50: '50', 100: '100', 150: '150', 200: '200'},
                    tooltip={"placement": "bottom", "always_visible": True}),
-        dcc.Graph(id='customswap_plot'),
+        dcc.Graph(id='pr_customswap_plot'),
+        html.Br(),
+        html.Br(),
+        html.A("Click here to see how much market cap could be saved by placing a portion of the liquidity pool in Customswap.",
+               href='.'),
+        html.Br(),
+        html.Br(),
+        dcc.Loading(
+            id="pr_loading-1",
+            type="default",
+            fullscreen=False,
+            children=html.Div(id="pr_loading-output-1")
+        ),
     ], style={'padding': 10, 'flex': 1}),
     html.Div(children=[
-        dcc.Graph(id='uniswap_plot'),
-        dcc.Graph(id='stableswap_plot'),
+        dcc.Graph(id='pr_uniswap_plot'),
+        dcc.Graph(id='pr_stableswap_plot'),
 
     ], style={'padding': 10, 'flex': 1})], style={'display': 'flex', 'flex-direction': 'row'})
 
 
-@app.callback(Output('uniswap_plot', 'figure'),
-              Output('stableswap_plot', 'figure'),
-              Output('customswap_plot', 'figure'),
+@callback(Output('pr_uniswap_plot', 'figure'),
+              Output('pr_stableswap_plot', 'figure'),
+              Output('pr_customswap_plot', 'figure'),
+              Output("pr_loading-output-1", "children"),
               [Input('A1', 'value'),
                Input('A2', 'value'),
                Input('target_price', 'value')])
@@ -73,9 +86,9 @@ def graph_update(a1, a2, target_price):
 
         figs.append(fig)
 
-    return figs[0], figs[1], figs[2]
+    return figs[0], figs[1], figs[2], None
 
 # server = app.server  # for heroku
 
 # for command line
-app.run_server(debug=True)
+# app.run_server(debug=True)
