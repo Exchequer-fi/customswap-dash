@@ -28,7 +28,7 @@ layout = html.Div([
         ),
         html.Br(),
         html.Br(),
-        html.Label('Circulating Token Supply:'),
+        html.Label('Circulating Token Supply: '),
         dcc.Input(
             id="num_tokens", type="number", placeholder='',
             min=1000, max=10000000000, step=1, value=1000000
