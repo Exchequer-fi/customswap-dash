@@ -1,3 +1,14 @@
+# Page: Simulation of price changes after trades
+#
+# DONE: "Target price" change to "Token Price Support Floor"
+# DONE: "Price of $Boot in $USDC" change to "Price of Token in $USDC"
+# DONE: "Token amount of $USDC/Token amount of $BOOT" change to "Ratio of $USDC vs Token"
+# DONE: "$Boot Sales" change to "Token sales"
+# DONE: "$Boot Purchases" change to "Token purchases"
+#
+# As an aside, can you double check the x axis numerical amounts, it seems a bit funky, the numbers do not seem to follow a continuous sequence.
+
+
 import dash
 from dash import html, callback
 import plotly.graph_objects as go
@@ -5,6 +16,7 @@ from dash import dcc
 from dash.dependencies import Input, Output
 
 import sys
+import numpy as np
 
 sys.path.append('..')
 from simulation import perform_simulation
@@ -18,7 +30,7 @@ layout = html.Div([
         html.H1(id='H1', children='Simulation of price changes after trades', style={'textAlign': 'center', \
                                                                                      'marginTop': 40,
                                                                                      'marginBottom': 40}),
-        html.Label('Target Price: '),
+        html.Label('Token Price Support Floor: '),
         dcc.Input(
             id="target_price", type="number", placeholder='',
             min=0.25, max=1000, step=0.25, value=8
@@ -72,16 +84,20 @@ def graph_update(a1, a2, target_price):
     fig_labels = ['Uniswap', 'Stableswap', 'Customswap']
     for i in range(3):
         fig = go.Figure([go.Scatter(x=token_ratio1[i, :], y=prices1[i, :] * target_price, mode='lines+markers', \
-                                    line=dict(color='firebrick', width=4), name='$Boot Sales'),
+                                    line=dict(color='firebrick', width=4), name='Token sales'),
                          go.Scatter(x=token_ratio2[i, :], y=prices2[i, :] * target_price, mode='lines+markers', \
-                                    line=dict(color='blue', width=4), name='$Boot Purchases')
+                                    line=dict(color='blue', width=4), name='Token Purchases')
                          ])
 
-        fig.update_xaxes(type="log")
-        fig.update_yaxes(type="log")
+        fig.update_xaxes(type="log", tickmode='array',
+        tickvals = [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2, 3, 5, 10, 25, 50, 100],
+        # ticktext = ['0.05', '0.1', '1', '100']
+                         )
+        fig.update_yaxes(type="log", tickmode='array',
+                         tickvals=target_price * np.array([0.01, 0.05, 0.1, 0.25, 0.5, 1, 2, 3, 5, 10, 25, 50, 100]),)
         fig.update_layout(title=fig_labels[i],
-                          xaxis_title='Token amount of $USDC / Token amount of $Boot',
-                          yaxis_title='Price of $Boot in $USDC'
+                          xaxis_title='Ratio of $USDC vs Token',
+                          yaxis_title='Price of Token in $USDC'
                           )
 
         figs.append(fig)

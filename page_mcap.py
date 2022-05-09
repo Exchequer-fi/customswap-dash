@@ -1,4 +1,3 @@
-import dash
 from dash import html, callback
 import plotly.graph_objects as go
 from dash import dcc
@@ -22,14 +21,14 @@ layout = html.Div([
         html.H1(id='H1', children='Simulation of market cap saved by Customswap', style={'textAlign': 'center', \
                                                                                          'marginTop': 40,
                                                                                          'marginBottom': 40}),
-        html.Label('Target Price: '),
+        html.Label('Token Price Support Floor: '),
         dcc.Input(
             id="target_price", type="number", placeholder='',
             min=0.25, max=1000, step=0.25, value=8
         ),
         html.Br(),
         html.Br(),
-        html.Label('Total Number of Tokens:'),
+        html.Label('Circulating Token Supply:'),
         dcc.Input(
             id="num_tokens", type="number", placeholder='',
             min=1000, max=10000000000, step=1, value=1000000
@@ -50,7 +49,7 @@ layout = html.Div([
 
         html.Br(),
         html.Br(),
-        html.Label('Large $Boot sale pool ratio:'),
+        html.Label('Percentage of Pool Sold:'),
         dcc.Slider(min=0.0001, max=0.5, step=0.05, value=0.1, id='large_sell_ratio', marks={
             0: '0', 50: '50', 100: '100', 150: '150', 200: '200'},
                    tooltip={"placement": "bottom", "always_visible": True}),
@@ -120,7 +119,7 @@ def graph_update(a1, a2, target_price, large_sell_ratio, num_tokens):
         line_color="green")
 
     fig_cap.update_layout(title='',
-                          xaxis_title='Pool ratio in Uniswap',
+                          xaxis_title='Pool ratio in Uniswap (vs Customswap)',
                           yaxis_title='Markep cap saved ($)',
                           yaxis_range=[0, 1.1 * max(np.max(market_cap_saved_uni),
                                                     np.max(market_cap_saved_cus)) * target_price]
@@ -128,7 +127,7 @@ def graph_update(a1, a2, target_price, large_sell_ratio, num_tokens):
 
     fig_prices.update_layout(title='',
                              xaxis_title='Pool ratio in Uniswap',
-                             yaxis_title='Final $Boot Price',
+                             yaxis_title='Token Price after Sale',
                              yaxis_range=[0, 1.1 * max(np.max(final_prices_for_liquidity_ratio_uni),
                                                        np.max(final_prices_for_liquidity_ratio_cus)) * target_price]
                              )
