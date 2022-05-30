@@ -29,7 +29,11 @@ layout = html.Div([
     html.Div(children=[
         html.H1(id='H1', children='Simulation of price changes after trades', style={'textAlign': 'center', \
                                                                                      'marginTop': 40,
-                                                                                     'marginBottom': 40}),
+                                                                                     'marginBottom': 20}),
+        html.H3(id='H2', children='Simulation of 10 sale or purchase transactions, each 1% the size of the pool.',
+                style={'textAlign': 'center', \
+                       'marginTop': 0,
+                       'marginBottom': 20}),
         html.Label('Token Price Support Floor: '),
         dcc.Input(
             id="target_price", type="number", placeholder='',
@@ -48,11 +52,12 @@ layout = html.Div([
         dcc.Slider(min=0.0001, max=200, step=0.0001, value=0.0001, id='A2', marks={
             0: '0', 50: '50', 100: '100', 150: '150', 200: '200'},
                    tooltip={"placement": "bottom", "always_visible": True}),
-        dcc.Graph(id='pr_customswap_plot'),
+        dcc.Graph(id='pr_uniswap_plot'),
         html.Br(),
         html.Br(),
-        html.A("Click here to see how much market cap could be saved by placing a portion of the liquidity pool in Customswap.",
-               href='.'),
+        html.A(
+            "Click here to see how much market cap could be saved by placing a portion of the liquidity pool in Customswap.",
+            href='.'),
         html.Br(),
         html.Br(),
         dcc.Loading(
@@ -63,19 +68,18 @@ layout = html.Div([
         ),
     ], style={'padding': 10, 'flex': 1}),
     html.Div(children=[
-        dcc.Graph(id='pr_uniswap_plot'),
         dcc.Graph(id='pr_stableswap_plot'),
-
+        dcc.Graph(id='pr_customswap_plot'),
     ], style={'padding': 10, 'flex': 1})], style={'display': 'flex', 'flex-direction': 'row'})
 
 
 @callback(Output('pr_uniswap_plot', 'figure'),
-              Output('pr_stableswap_plot', 'figure'),
-              Output('pr_customswap_plot', 'figure'),
-              Output("pr_loading-output-1", "children"),
-              [Input('A1', 'value'),
-               Input('A2', 'value'),
-               Input('target_price', 'value')])
+          Output('pr_stableswap_plot', 'figure'),
+          Output('pr_customswap_plot', 'figure'),
+          Output("pr_loading-output-1", "children"),
+          [Input('A1', 'value'),
+           Input('A2', 'value'),
+           Input('target_price', 'value')])
 def graph_update(a1, a2, target_price):
     prices1, prices2, price_slippages1, price_slippages2, token_ratio1, token_ratio2, \
     amplifications1, amplifications2 = perform_simulation(a1=a1, a2=a2)
@@ -83,22 +87,27 @@ def graph_update(a1, a2, target_price):
     figs = []
     fig_labels = ['Uniswap', 'Stableswap', 'Customswap']
     for i in range(3):
-        fig = go.Figure([go.Scatter(x=token_ratio1[i, :], y=prices1[i, :] * target_price, mode='lines+markers', \
+        fig = go.Figure([go.Scatter(x=token_ratio1[i, :] * target_price, y=prices1[i, :] * target_price, mode='lines+markers', \
                                     line=dict(color='firebrick', width=4), name='Token sales'),
-                         go.Scatter(x=token_ratio2[i, :], y=prices2[i, :] * target_price, mode='lines+markers', \
+                         go.Scatter(x=token_ratio2[i, :] * target_price, y=prices2[i, :] * target_price, mode='lines+markers', \
                                     line=dict(color='blue', width=4), name='Token Purchases')
                          ])
 
         fig.update_xaxes(type="log", tickmode='array',
-        tickvals = [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2, 3, 5, 10, 25, 50, 100],
-        # ticktext = ['0.05', '0.1', '1', '100']
+                         tickvals=target_price * np.array([0.01, 0.05, 0.1, 0.25, 0.5, 1, 2, 3, 5, 10, 25, 50, 100]),
+                         # ticktext = ['0.05', '0.1', '1', '100']
                          )
         fig.update_yaxes(type="log", tickmode='array',
-                         tickvals=target_price * np.array([0.01, 0.05, 0.1, 0.25, 0.5, 1, 2, 3, 5, 10, 25, 50, 100]),)
-        fig.update_layout(title=fig_labels[i],
-                          xaxis_title='Ratio of $USDC vs Token',
-                          yaxis_title='Price of Token in $USDC'
-                          )
+                         tickvals=target_price * np.array([0.01, 0.05, 0.1, 0.25, 0.5, 1, 2, 3, 5, 10, 25, 50, 100]), )
+        fig.update_layout(title={
+            'text': fig_labels[i],
+            'x': 0.45,
+            'y': 0.85,
+            'xanchor': 'center',
+            'yanchor': 'top'},
+            xaxis_title='Ratio of $USDC vs Token',
+            yaxis_title='Price of Token in $USDC'
+        )
 
         figs.append(fig)
 

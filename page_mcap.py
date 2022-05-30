@@ -50,12 +50,13 @@ layout = html.Div([
         html.Br(),
         html.Br(),
         html.Label('Percentage of Pool Sold:'),
-        dcc.Slider(min=0.0001, max=0.5, step=0.05, value=0.1, id='large_sell_ratio', marks={
+        dcc.Slider(min=0.0001, max=0.8, step=0.05, value=0.1, id='large_sell_ratio', marks={
             0: '0', 50: '50', 100: '100', 150: '150', 200: '200'},
                    tooltip={"placement": "bottom", "always_visible": True}),
         html.Br(),
         html.Br(),
-        html.A("Click here to see how Customswap price changes relative to pool ratio compared to Uniswap.", href='/page_price'),
+        html.A("Click here to see how Customswap price changes relative to pool ratio compared to Uniswap.",
+               href='/page_price'),
         html.Br(),
         html.Br(),
         dcc.Loading(
@@ -66,14 +67,13 @@ layout = html.Div([
         ),
     ], style={'padding': 10, 'flex': 1}),
     html.Div(children=[
-        dcc.Graph(id='uniswap_plot'),
-        dcc.Graph(id='customswap_plot'),
-
+        dcc.Graph(id='prices_plot'),
+        dcc.Graph(id='market_cap_plot'),
     ], style={'padding': 10, 'flex': 1})], style={'display': 'flex', 'flex-direction': 'row'}, )
 
 
-@callback(Output('uniswap_plot', 'figure'),
-          Output('customswap_plot', 'figure'),
+@callback(Output('market_cap_plot', 'figure'),
+          Output('prices_plot', 'figure'),
           Output("loading-output-1", "children"),
           [Input('A1', 'value'),
            Input('A2', 'value'),
@@ -118,19 +118,29 @@ def graph_update(a1, a2, target_price, large_sell_ratio, num_tokens):
         annotation_text='Price if all in Uniswap', annotation_position="bottom",
         line_color="green")
 
-    fig_cap.update_layout(title='',
-                          xaxis_title='Pool ratio in Uniswap (vs Customswap)',
-                          yaxis_title='Markep cap saved ($)',
-                          yaxis_range=[0, 1.1 * max(np.max(market_cap_saved_uni),
-                                                    np.max(market_cap_saved_cus)) * target_price]
-                          )
+    fig_cap.update_layout(title={
+        'text': "Market Cap",
+        'x': 0.45,
+        'y': 0.85,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+        xaxis_title='Pool ratio in Uniswap (vs Customswap)',
+        yaxis_title='Markep cap saved ($)',
+        yaxis_range=[0, 1.1 * max(np.max(market_cap_saved_uni),
+                                  np.max(market_cap_saved_cus)) * target_price]
+    )
 
-    fig_prices.update_layout(title='',
-                             xaxis_title='Pool ratio in Uniswap',
-                             yaxis_title='Token Price after Sale',
-                             yaxis_range=[0, 1.1 * max(np.max(final_prices_for_liquidity_ratio_uni),
-                                                       np.max(final_prices_for_liquidity_ratio_cus)) * target_price]
-                             )
+    fig_prices.update_layout(title={
+        'text': "Price",
+        'x': 0.45,
+        'y': 0.85,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+        xaxis_title='Pool ratio in Uniswap',
+        yaxis_title='Token Price after Sale',
+        yaxis_range=[0, 1.1 * max(np.max(final_prices_for_liquidity_ratio_uni),
+                                  np.max(final_prices_for_liquidity_ratio_cus)) * target_price]
+    )
 
     return fig_cap, fig_prices, None
 
