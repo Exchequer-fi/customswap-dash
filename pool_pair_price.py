@@ -106,9 +106,9 @@ def final_price_for_liquidity_ratio(uniswap_liquity_ratio, arb_trade_boot_num=10
                                                                    requested_token_label='Boot'))
 
     if large_uniswap_trade:
-        return uniswap_prices_after_arb[-1]
+        return uniswap_prices_after_arb[-1], np.sum(arbBootGains)
     else:
-        return customswap_prices_after_arb[-1]
+        return customswap_prices_after_arb[-1], np.sum(arbBootGains)
 
 
 def compute_market_cap_saved(large_sell_ratio=0.1, boot_token_num=1000000, large_uniswap_trade=True,
@@ -116,23 +116,22 @@ def compute_market_cap_saved(large_sell_ratio=0.1, boot_token_num=1000000, large
 
     # compute market cap saved by adding Customswap compared to if all the liquidity was in a Uniswap pool.
 
-    if large_uniswap_trade:
-        uniswap_liquity_ratios = np.arange(large_sell_ratio + 0.01, 0.99, 1 / 30)
-    else:
-        uniswap_liquity_ratios = 1 - np.arange(large_sell_ratio + 0.01, 0.99, 1 / 30)
-
+    uniswap_liquity_ratios = np.arange(0.01, 0.99, 1 / 30)
 
     final_prices_for_liquidity_ratio = []
+    arb_drains = []
     for uniswap_liquity_ratio in uniswap_liquity_ratios:
-        final_prices_for_liquidity_ratio.append(final_price_for_liquidity_ratio(uniswap_liquity_ratio,
+        final_price, arb_drain = final_price_for_liquidity_ratio(uniswap_liquity_ratio,
                                                                                 large_sell_ratio=large_sell_ratio,
                                                                                 arb_trade_boot_num=arb_trade_boot_num,
                                                                                 boot_token_num=boot_token_num,
                                                                                 arb_price_tolerance=arb_price_tolerance,
                                                                                 large_uniswap_trade=large_uniswap_trade,
-                                                                                amplification=amplification))
+                                                                                amplification=amplification)
+        final_prices_for_liquidity_ratio.append(final_price)
+        arb_drains.append(arb_drain)
 
-    price_if_all_uniswap = final_price_for_liquidity_ratio(0.999,
+    price_if_all_uniswap, _ = final_price_for_liquidity_ratio(0.999,
                                                            large_sell_ratio=large_sell_ratio,
                                                            arb_trade_boot_num=1)
 
@@ -140,7 +139,7 @@ def compute_market_cap_saved(large_sell_ratio=0.1, boot_token_num=1000000, large
     market_cap_saved = (final_prices_for_liquidity_ratio - price_if_all_uniswap) * boot_token_num
 
 
-    return market_cap_saved, final_prices_for_liquidity_ratio, uniswap_liquity_ratios, price_if_all_uniswap
+    return market_cap_saved, final_prices_for_liquidity_ratio, uniswap_liquity_ratios, price_if_all_uniswap, arb_drains
 
 
 def plot_saved_market_cap():

@@ -4,3 +4,4 @@ dash
 dash-html-components
 dash-core-components
 plotly
+matplotlib

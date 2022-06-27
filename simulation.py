@@ -55,7 +55,7 @@ def perform_simulation(a1=85, a2=0.0001):
 
     lps = [lp_uniswap, lp_stableswap, lp_customswap1]
 
-    n_purchases = 10
+    n_purchases = 20
     purchase_each_time = 5000
 
     totals1, prices1, received_amounts1, Ds1, amplifications1, token_amounts1, price_slippages1 = \
